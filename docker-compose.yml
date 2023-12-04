@@ -1,0 +1,76 @@
+version: '3.4'
+
+networks:
+  backend:
+
+services:
+  customerdb:
+    container_name: customer-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Omer1234
+    networks:
+      - backend
+    ports:
+      - 18001:1433
+  customerapi:
+    image: ${DOCKER_REGISTRY-}customerapi
+    build:
+      context: .
+      dockerfile: CustomerAPI/Dockerfile
+    networks:
+      - backend
+    ports:
+      - 18002:80
+    environment:
+      - DB_HOST=customerdb
+      - DB_NAME=customer
+      - DB_SA_PASSWORD=Omer1234
+  productdb:
+    container_name: product-db
+    image: mysql:8.0.29-oracle
+    environment:
+      - MYSQL_ROOT_PASSWORD=Omer1234
+    ports:
+      - 18003:3306
+    networks:
+      - backend
+
+  productapi:
+    image: ${DOCKER_REGISTRY-}productapi
+    build:
+      context: .
+      dockerfile: productAPI/Dockerfile
+    networks:
+      - backend
+    ports:
+      - 18004:80
+    environment:
+      - DB_HOST=productdb
+      - DB_NAME=product
+      - DB_ROOT_PASSWORD=Omer1234
+  orderdb:
+    container_name: order-db
+    image: mysql:8.0.29-oracle
+    environment:
+      - MYSQL_ROOT_PASSWORD=Omer1234
+    ports:
+      - 18005:3306
+    networks:
+      - backend
+  orderapi:
+    container_name: order-api
+    image: ${DOCKER_REGISTRY-}orderapi
+    build:
+      context: .
+      dockerfile: OrderAPI/Dockerfile
+    ports:
+      - 18006:80
+    networks:
+      - backend
+    environment:
+      - DB_HOST=orderdb
+      - DB_NAME=order 
+      - DB_ROOT_PASSWORD=Omer1234 
+
