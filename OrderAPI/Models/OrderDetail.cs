@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OrderAPI.Models
 {
- 
+    [Table("orderDetail")]
     public class OrderDetail
     {
         [Key]

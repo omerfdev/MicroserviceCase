@@ -5,12 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OrderAPI.Models
 {
-    
+    [Table("order")]
     public class Order
     {
         [Key]
         [Column("order_id")]
-        public string OrderId { get; set; }
+        public int OrderId { get; set; }
         [Column("customer_id")]
         public int CustomerId { get; set; }
         [Column("ordered_on")]

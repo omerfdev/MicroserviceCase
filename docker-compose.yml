@@ -21,8 +21,6 @@ services:
       dockerfile: CustomerAPI/Dockerfile
     networks:
       - backend
-    ports:
-      - 18002:80
     environment:
       - DB_HOST=customerdb
       - DB_NAME=customer
@@ -44,8 +42,6 @@ services:
       dockerfile: productAPI/Dockerfile
     networks:
       - backend
-    ports:
-      - 18004:80
     environment:
       - DB_HOST=productdb
       - DB_NAME=product
@@ -65,12 +61,23 @@ services:
     build:
       context: .
       dockerfile: OrderAPI/Dockerfile
-    ports:
-      - 18006:80
     networks:
       - backend
     environment:
       - DB_HOST=orderdb
       - DB_NAME=order 
       - DB_ROOT_PASSWORD=Omer1234 
+
+
+  apigateway:
+    container_name: api-gateway
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: APIGateway/Dockerfile
+    ports:
+    - 8001:80
+    networks:
+    - backend
+
 

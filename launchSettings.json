@@ -5,7 +5,8 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "customerapi": "StartDebugging",
-        "orderapi": "StartDebugging"
+        "orderapi": "StartDebugging",
+        "apigateway": "StartDebugging"
       }
     }
   }
