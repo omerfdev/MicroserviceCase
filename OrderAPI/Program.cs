@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using OrderAPI;
+using OrderAPI.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddScoped<IRabbitMQProducer, RabbitMQProducer>();
 builder.Services.AddControllers();
 
 //

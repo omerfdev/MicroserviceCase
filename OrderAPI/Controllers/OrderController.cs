@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OrderAPI.Models;
+using OrderAPI.RabbitMQ;
 
 namespace OrderAPI.Controllers
 {
@@ -8,10 +9,13 @@ namespace OrderAPI.Controllers
     public class OrderController : ControllerBase
     {
         private readonly OrderDbContext _orderDbContext;
+        private readonly IRabbitMQProducer _rabbitMQProducer;
 
-        public OrderController(OrderDbContext orderDbContext)
+
+        public OrderController(OrderDbContext orderDbContext, IRabbitMQProducer rabbitMQProducer)
         {
             _orderDbContext = orderDbContext;
+            _rabbitMQProducer = rabbitMQProducer;
         }
         [HttpGet]
         public ActionResult<IEnumerable<Order>> GetOrders()
@@ -27,8 +31,9 @@ namespace OrderAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder(Order order)
         {
-            _orderDbContext.Orders.AddAsync(order);
-            await _orderDbContext.SaveChangesAsync();
+            //_orderDbContext.Orders.AddAsync(order);
+            //await _orderDbContext.SaveChangesAsync();
+            _rabbitMQProducer.SendMessage(order);
             return Ok();
         }
         [HttpPut]

@@ -1,6 +1,4 @@
-﻿
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OrderAPI.Models
@@ -14,8 +12,7 @@ namespace OrderAPI.Models
         [Column("customer_id")]
         public int CustomerId { get; set; }
         [Column("ordered_on")]
-        public DateTime OrderedOn { get; set; }
-      
+        public DateTime OrderedOn { get; set; }      
         public List<OrderDetail> OrderDetails{ get; set; }
     }
 }
