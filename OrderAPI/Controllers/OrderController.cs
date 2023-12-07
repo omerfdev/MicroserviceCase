@@ -31,9 +31,10 @@ namespace OrderAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder(Order order)
         {
-            //_orderDbContext.Orders.AddAsync(order);
-            //await _orderDbContext.SaveChangesAsync();
+            _orderDbContext.Orders.AddAsync(order);
             _rabbitMQProducer.SendMessage(order);
+            await _orderDbContext.SaveChangesAsync();
+           
             return Ok();
         }
         [HttpPut]

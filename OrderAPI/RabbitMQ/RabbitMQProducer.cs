@@ -1,4 +1,5 @@
 ﻿using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System.Net.Http.Json;
 using System.Text;
 
@@ -10,8 +11,8 @@ namespace OrderAPI.RabbitMQ
         {
             string rabbitMQHost = "localhost"; // RabbitMQ server IP adresi ya da host adı
             int rabbitMQPort = 5672; // Default RabbitMQ portu
-            string rabbitMQUserName = "guest"; // RabbitMQ kullanıcı adı
-            string rabbitMQPassword = "guest"; // RabbitMQ şifre
+            string rabbitMQUserName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER"); // RabbitMQ kullanıcı adı
+            string rabbitMQPassword = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS"); // RabbitMQ şifre
             string exchangeName = "OrderProcessingExchange";
             string queueName = "OrderQueue";
 
@@ -41,9 +42,12 @@ namespace OrderAPI.RabbitMQ
                 var json = JsonContent.Create(message);
                 var body = Encoding.UTF8.GetBytes(json.ToString());
                 channel.BasicPublish(exchange: "", routingKey: "OrderQueue", body: body);
-
-                //dinleyip iş yapan worker denir.
                 Console.WriteLine($"Exchange '{exchangeName}' ve kuyruk '{queueName}' başarıyla oluşturuldu ve birbirine bağlandı.");
+         
+                
+                //dinleyip iş yapan worker denir.
+            
+               
             }
             
             //put the data on to the product queue

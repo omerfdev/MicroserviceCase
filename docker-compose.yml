@@ -14,6 +14,7 @@ services:
       - backend
     ports:
       - 18001:1433
+
   customerapi:
     image: ${DOCKER_REGISTRY-}customerapi
     build:
@@ -25,6 +26,7 @@ services:
       - DB_HOST=customerdb
       - DB_NAME=customer
       - DB_SA_PASSWORD=Omer1234
+
   productdb:
     container_name: product-db
     image: mysql:8.0.29-oracle
@@ -46,6 +48,7 @@ services:
       - DB_HOST=productdb
       - DB_NAME=product
       - DB_ROOT_PASSWORD=Omer1234
+
   orderdb:
     container_name: order-db
     image: mysql:8.0.29-oracle
@@ -55,6 +58,7 @@ services:
       - 18005:3306
     networks:
       - backend
+
   orderapi:
     container_name: order-api
     image: ${DOCKER_REGISTRY-}orderapi
@@ -68,7 +72,6 @@ services:
       - DB_NAME=order 
       - DB_ROOT_PASSWORD=Omer1234 
 
-
   apigateway:
     container_name: api-gateway
     image: ${DOCKER_REGISTRY-}apigateway
@@ -76,8 +79,18 @@ services:
       context: .
       dockerfile: APIGateway/Dockerfile
     ports:
-    - 8001:80
+      - 8001:80
     networks:
-    - backend
+      - backend
 
-
+  rabbitmq:
+    container_name: rabbitmq
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
