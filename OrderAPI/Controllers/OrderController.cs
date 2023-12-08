@@ -36,10 +36,10 @@ namespace OrderAPI.Controllers
             order.CreatedAt = DateTime.Now;
             _orderDbContext.Orders.AddAsync(order);           
             await _orderDbContext.SaveChangesAsync();
-            //_rabbitMQProducer.SendMessage(order);
+            _rabbitMQProducer.SendMessage(order);
             return Ok();
         }
-        [HttpPut]
+        [HttpPut]//id ileyap
         public async Task<ActionResult<Order>> UpdateOrder(Order order)
         {
             order.UpdatedAt= DateTime.Now;  

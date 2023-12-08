@@ -1,4 +1,5 @@
-﻿using RabbitMQ.Client;
+﻿using Newtonsoft.Json;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Net.Http.Json;
 using System.Text;
@@ -9,7 +10,7 @@ namespace OrderAPI.RabbitMQ
     {
         public void SendMessage<T>(T message)
         {
-            string rabbitMQHost = "localhost"; // RabbitMQ server IP adresi ya da host adı
+            string rabbitMQHost = "myrabbitmq"; // RabbitMQ server IP adresi ya da host adı
             int rabbitMQPort = 5672; // Default RabbitMQ portu
             string rabbitMQUserName = "guest"; // RabbitMQ kullanıcı adı
             string rabbitMQPassword = "guest"; // RabbitMQ şifre
@@ -39,8 +40,8 @@ namespace OrderAPI.RabbitMQ
                 // Exchange ile kuyruğu bağla
                 channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: "");
                 //Serialize the message
-                var json = JsonContent.Create(message);
-                var body = Encoding.UTF8.GetBytes(json.ToString());
+                var json = JsonConvert.SerializeObject(message);
+                var body = Encoding.UTF8.GetBytes(json);
                 channel.BasicPublish(exchange: "", routingKey: "OrderQueue", body: body);
                 Console.WriteLine($"Exchange '{exchangeName}' ve kuyruk '{queueName}' başarıyla oluşturuldu ve birbirine bağlandı.");
          

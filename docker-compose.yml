@@ -4,6 +4,18 @@ networks:
   backend:
 
 services:
+  rabbitmq:
+    container_name: myrabbitmq
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
   customerdb:
     container_name: customer-db
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -13,7 +25,7 @@ services:
     networks:
       - backend
     ports:
-      - 18001:1433
+      - "18001:1433"
 
   customerapi:
     image: ${DOCKER_REGISTRY-}customerapi
@@ -29,11 +41,11 @@ services:
 
   productdb:
     container_name: product-db
-    image: mysql:8.0.29-oracle
+    image: mysql:8.0.29
     environment:
       - MYSQL_ROOT_PASSWORD=Omer1234
     ports:
-      - 18003:3306
+      - "18003:3306"
     networks:
       - backend
 
@@ -51,11 +63,11 @@ services:
 
   orderdb:
     container_name: order-db
-    image: mysql:8.0.29-oracle
+    image: mysql:8.0.29
     environment:
       - MYSQL_ROOT_PASSWORD=Omer1234
     ports:
-      - 18005:3306
+      - "18005:3306"
     networks:
       - backend
 
@@ -75,6 +87,7 @@ services:
       - RABBITMQ_PORT=5672
       - RABBITMQ_USER=guest
       - RABBITMQ_PASSWORD=guest
+  
   apigateway:
     container_name: api-gateway
     image: ${DOCKER_REGISTRY-}apigateway
@@ -82,21 +95,10 @@ services:
       context: .
       dockerfile: APIGateway/Dockerfile
     ports:
-      - 8001:80
+      - "8001:80"
     networks:
       - backend
 
-  rabbitmq:
-    container_name: rabbitmq
-    image: "rabbitmq:3-management"
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    networks:
-      - backend
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
   orderconsumer:
     image: ${DOCKER_REGISTRY-}orderconsumer
     build:
@@ -107,4 +109,5 @@ services:
       - RABBITMQ_PORT=5672
       - RABBITMQ_USER=guest
       - RABBITMQ_PASSWORD=guest
-     
+    networks:
+      - backend 
