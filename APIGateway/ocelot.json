@@ -74,6 +74,6 @@
 		}
 	],
 	"GlobalConfiguration": {
-		"BaseUrl": "http://localhost:800"
-	}	
+		"BaseUrl": "http://localhost:800/"
+	}
 }

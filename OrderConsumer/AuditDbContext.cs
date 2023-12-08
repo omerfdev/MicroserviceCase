@@ -8,10 +8,6 @@ namespace OrderConsumer
 {
     public class AuditDbContext : DbContext
     {
-        public DbSet<Order> Orders { get; set; }
-
-    
-
         public AuditDbContext(DbContextOptions<AuditDbContext> options) : base(options)
         {
             try
@@ -28,7 +24,8 @@ namespace OrderConsumer
                 Console.WriteLine(ex.Message);
             }
         }
+        public DbSet<Order> OrdersLog { get; set; }
 
-       
+
     }
 }

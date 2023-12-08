@@ -11,8 +11,8 @@ namespace OrderAPI.RabbitMQ
         {
             string rabbitMQHost = "localhost"; // RabbitMQ server IP adresi ya da host adı
             int rabbitMQPort = 5672; // Default RabbitMQ portu
-            string rabbitMQUserName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER"); // RabbitMQ kullanıcı adı
-            string rabbitMQPassword = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS"); // RabbitMQ şifre
+            string rabbitMQUserName = "guest"; // RabbitMQ kullanıcı adı
+            string rabbitMQPassword = "guest"; // RabbitMQ şifre
             string exchangeName = "OrderProcessingExchange";
             string queueName = "OrderQueue";
 

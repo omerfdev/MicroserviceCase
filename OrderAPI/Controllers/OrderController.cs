@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OrderAPI.Models;
 using OrderAPI.RabbitMQ;
 
@@ -20,32 +21,34 @@ namespace OrderAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Order>> GetOrders()
         {
-            return _orderDbContext.Orders;
+            return _orderDbContext.Orders.Include(o=>o.Address).Include(o=>o.Product).ToList();
         }
 
-        [HttpGet("{orderId:int}")]
-        public async Task<ActionResult<Order>> GetByIdOrder(int orderId)
+        [HttpGet("{orderId:guid}")]
+        public async Task<ActionResult<Order>> GetByIdOrder(Guid orderId)
         {
-            return await _orderDbContext.Orders.FindAsync(orderId);
+            return await _orderDbContext.Orders.Include(o=>o.Product).Include(o=>o.Address).FirstOrDefaultAsync(x=>x.Id == orderId);
+      
         }
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder(Order order)
         {
-            _orderDbContext.Orders.AddAsync(order);
-            _rabbitMQProducer.SendMessage(order);
+            order.CreatedAt = DateTime.Now;
+            _orderDbContext.Orders.AddAsync(order);           
             await _orderDbContext.SaveChangesAsync();
-           
+            //_rabbitMQProducer.SendMessage(order);
             return Ok();
         }
         [HttpPut]
         public async Task<ActionResult<Order>> UpdateOrder(Order order)
         {
+            order.UpdatedAt= DateTime.Now;  
             _orderDbContext.Orders.Update(order);
             await _orderDbContext.SaveChangesAsync();
             return Ok();
         }
-        [HttpDelete("{orderId:int}")]
-        public async Task<ActionResult<Order>> DeleteOrder(int orderId)
+        [HttpDelete("{orderId:guid}")]
+        public async Task<ActionResult<Order>> DeleteOrder(Guid orderId)
         {
             var product = await _orderDbContext.Orders.FindAsync(orderId);
             _orderDbContext.Orders.Remove(product);

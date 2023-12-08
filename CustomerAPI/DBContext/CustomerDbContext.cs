@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-
+using System;
 
 namespace CustomerAPI.DBContext
 {
@@ -24,8 +24,12 @@ namespace CustomerAPI.DBContext
                 Console.WriteLine(ex.Message);
             }
         }
+       
+      
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+     
+
+       
     }
 }
-
-
