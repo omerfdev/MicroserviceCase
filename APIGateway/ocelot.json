@@ -2,7 +2,7 @@
 	"Routes": [
 		{
 			"UpstreamPathTemplate": "/api/Customer",
-			"UpstreamHttpMethod": [ "Get", "Post", "Put" ],
+			"UpstreamHttpMethod": [ "Get", "Post" ],
 			"DownstreamScheme": "http",
 			"DownstreamHostAndPorts": [
 				{
@@ -14,7 +14,7 @@
 		},
 		{
 			"UpstreamPathTemplate": "/api/Customer/{customerId}",
-			"UpstreamHttpMethod": [ "Get", "Delete" ],
+			"UpstreamHttpMethod": [ "Get", "Delete","Put" ],
 			"DownstreamScheme": "http",
 			"DownstreamHostAndPorts": [
 				{
@@ -50,7 +50,7 @@
 		},
 		{
 			"UpstreamPathTemplate": "/api/Order",
-			"UpstreamHttpMethod": [ "Get", "Post", "Put" ],
+			"UpstreamHttpMethod": [ "Get", "Post" ],
 			"DownstreamScheme": "http",
 			"DownstreamHostAndPorts": [
 				{
@@ -62,7 +62,7 @@
 		},
 		{
 			"UpstreamPathTemplate": "/api/Order/{orderId}",
-			"UpstreamHttpMethod": [ "Get", "Delete" ],
+			"UpstreamHttpMethod": [ "Get", "Delete", "Put" ],
 			"DownstreamScheme": "http",
 			"DownstreamHostAndPorts": [
 				{

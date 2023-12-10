@@ -111,3 +111,21 @@ services:
       - RABBITMQ_PASSWORD=guest
     networks:
       - backend 
+      
+  auditdb:
+    container_name: audit-db
+    image: mysql:8.0.29
+    environment:
+      - MYSQL_ROOT_PASSWORD=Omer1234
+    ports:
+      - "18009:3306"
+    networks:
+      - backend
+  
+
+  sendemaildaily:
+    image: ${DOCKER_REGISTRY-}sendemaildaily
+    build:
+      context: .
+      dockerfile: SendEmailDaily/Dockerfile
+

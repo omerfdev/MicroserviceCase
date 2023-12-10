@@ -7,7 +7,9 @@
         "customerapi": "StartDebugging",
         "orderapi": "StartDebugging",
         "apigateway": "StartDebugging",
-        "orderconsumer": "StartDebugging"
+        "orderconsumer": "StartDebugging",
+        "senddataapi": "StartDebugging",
+        "sendemaildaily": "StartDebugging"
       }
     }
   }

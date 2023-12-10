@@ -2,11 +2,7 @@ using CustomerAPI.DBContext;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
-
-
-
 
 //Dependency Injection for DB
 var dbHost = Environment.GetEnvironmentVariable("DB_HOST");

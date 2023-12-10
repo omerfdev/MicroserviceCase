@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SendEmailDaily": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

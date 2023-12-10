@@ -1,5 +1,7 @@
-﻿using CustomerAPI.DBContext;
+﻿
+using CustomerAPI.DBContext;
 using CustomerAPI.Models;
+using CustomerAPI.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,12 +11,14 @@ namespace CustomerAPI.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly CustomerDbContext _customerDbContext;
+        private readonly CustomerDbContext _customerDbContext;      
 
         public CustomerController(CustomerDbContext customerDbContext)
         {
             _customerDbContext = customerDbContext;
+            
         }
+
         [HttpGet]
         public ActionResult<IEnumerable<Customer>> GetCustomers()
         {
@@ -29,20 +33,13 @@ namespace CustomerAPI.Controllers
         public async Task<ActionResult<Customer>> GetByIdCustomer(Guid customerId)
         {
             var customer = await _customerDbContext.Customers
-    .Include(c => c.Address)
-    .FirstOrDefaultAsync(x => x.Id == customerId);
-
-           
+                            .Include(c => c.Address)
+                            .FirstOrDefaultAsync(x => x.Id == customerId);              
             if (customer == null)
-            {
-                // Handle the case when the customer with the given Id is not found
+            {               
                 return NotFound();
             }
-
-            // Your logic to handle the found customer
-            // For example, you can return the customer as part of the response
             return Ok(customer);
-
         }
 
         [HttpPost]
@@ -62,19 +59,21 @@ namespace CustomerAPI.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<ActionResult<Customer>> UpdateCustomer(Customer updatedCustomer)
+        [HttpPut("{customerId:guid}")]
+        public async Task<ActionResult<Customer>> UpdateCustomer(Guid customerId,CustomerUpdateDTO updateCustomer)
         {
-            updatedCustomer.UpdatedAt= DateTime.Now;
-            _customerDbContext.Customers.Update(updatedCustomer);
-            await _customerDbContext.SaveChangesAsync();
-            
+            Customer customer = await _customerDbContext.Customers.Include(c => c.Address).FirstOrDefaultAsync(x => x.Id == customerId);
+            customer.UpdatedAt = DateTime.Now;
+            customer.Name= updateCustomer.Name;
+            customer.Email= updateCustomer.Email;
+            customer.Address.AddressLine= updateCustomer.Address.AddressLine;
+            customer.Address.City= updateCustomer.Address.City;
+            customer.Address.CityCode= updateCustomer.Address.CityCode;
+            await _customerDbContext.SaveChangesAsync();            
             return Ok();
         }
 
-
-
-        [HttpDelete("{customerId}")]
+        [HttpDelete("{customerId:guid}")]
         public async Task<ActionResult<Customer>> DeleteCustomer(Guid customerId)
         {
             var customer = await _customerDbContext.Customers.FindAsync(customerId);
@@ -89,6 +88,20 @@ namespace CustomerAPI.Controllers
 
             return Ok(customer);
         }
+
+        [HttpGet("Validate/{customerId:guid}")]
+        public async Task<ActionResult<bool>> Validate(Guid customerId)
+        {
+            var customer = await _customerDbContext.Customers.FindAsync(customerId);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return true;
+        }
+
 
     }
 }
