@@ -1,0 +1,61 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Run Tests for CustomerAPI
+      run: |
+        cd CustomerAPI
+        # Test komutlar? buraya eklenecek
+        cd ..
+
+    - name: Run Tests for ProductAPI
+      run: |
+        cd ProductAPI
+        # Test komutlar? buraya eklenecek
+        cd ..
+
+    - name: Run Tests for OrderAPI
+      run: |
+        cd OrderAPI
+        # Test komutlar? buraya eklenecek
+        cd ..
+
+    - name: Run Tests for OrderConsumer
+      run: |
+        cd OrderConsumer
+        dotnet restore
+        dotnet build
+        dotnet test
+        cd ..
+
+    - name: Build and Push Docker Images
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        docker build -t ${DOCKER_REGISTRY-}customerapi -f CustomerAPI/Dockerfile .
+        docker build -t ${DOCKER_REGISTRY-}productapi -f productAPI/Dockerfile .
+        docker build -t ${DOCKER_REGISTRY-}orderapi -f OrderAPI/Dockerfile .
+        docker build -t ${DOCKER_REGISTRY-}apigateway -f APIGateway/Dockerfile .
+        docker build -t ${DOCKER_REGISTRY-}orderconsumer -f OrderConsumer/Dockerfile .
+        docker build -t ${DOCKER_REGISTRY-}senddataapi -f SendDataAPI/Dockerfile .
+
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+
+        docker push ${DOCKER_REGISTRY-}customerapi
+        docker push ${DOCKER_REGISTRY-}productapi
+        docker push ${DOCKER_REGISTRY-}orderapi
+        docker push ${DOCKER_REGISTRY-}apigateway
+        docker push ${DOCKER_REGISTRY-}orderconsumer
+        docker push ${DOCKER_REGISTRY-}senddataapi
