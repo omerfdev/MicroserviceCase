@@ -1,4 +1,7 @@
-﻿using SendEmailDailyLibrary;
+﻿using MySqlX.XDevAPI;
+using SendEmailDailyLibrary;
+using System.Net.Sockets;
+using System.Xml.Linq;
 
 namespace SendEmailDaily
 {
@@ -16,7 +19,7 @@ namespace SendEmailDaily
                 recipientEmail: "omeralmali1@gmail.com",
                 subject: "Daily Database Update",
                 body: "Here are the new records added in the last day:",
-                connectionString: "server=auditdb;port=3306;database=AuditDb;user=root;password=Omer1234;"
+                connectionString: "Server=127.0.0.1;Port:18009;Database=AuditDB;User=root;Password=Omer1234;"
 
             );
 
@@ -25,6 +28,7 @@ namespace SendEmailDaily
 
             // E-posta gönderme işlemini başlatın
             await dailyEmailSender.SendDailyEmail();
+
 
             Console.WriteLine("Press any key to exit...");
         }

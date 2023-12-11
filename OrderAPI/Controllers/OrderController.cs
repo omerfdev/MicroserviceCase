@@ -84,7 +84,6 @@ namespace OrderAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                // Handle concurrency exception if needed
                 return false;
             }
         }

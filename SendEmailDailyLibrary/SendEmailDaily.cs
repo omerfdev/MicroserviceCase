@@ -1,5 +1,7 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Dapper;
+using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
@@ -40,7 +42,7 @@ namespace SendEmailDailyLibrary
             try
             {
                 // Retrieve data added in the last day from the database
-                var lastDay = DateTime.Now.AddDays(-1);
+                var lastDay = DateTime.Now;
                 var newData = await GetDataAddedInLastDay(lastDay);
 
                 if (newData.Any())
@@ -58,28 +60,20 @@ namespace SendEmailDailyLibrary
             }
         }
 
-        private async Task<IQueryable<YourEntity>> GetDataAddedInLastDay(DateTime lastDay)
+        private async Task<IEnumerable<YourEntity>> GetDataAddedInLastDay(DateTime lastDay)
         {
-            using (var connection = new MySqlConnection(_connectionString))
+            using (IDbConnection dbConnection = new MySqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
+                dbConnection.Open();
 
-                using (var command = new MySqlCommand("SELECT * FROM YourTable WHERE CreatedAt >= @LastDay", connection))
-                {
-                    command.Parameters.AddWithValue("@LastDay", lastDay);
+                var query = "SELECT * FROM YourTable WHERE CreatedAt >= @LastDay";
+                var newData = await dbConnection.QueryAsync<YourEntity>(query, new { LastDay = lastDay });
 
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        // Implement logic to convert the data reader to your entity
-                        // This is a placeholder. Replace it with your actual logic.
-                        var newData = Enumerable.Empty<YourEntity>().AsQueryable();
-                        return newData;
-                    }
-                }
+                return newData;
             }
         }
 
-        private async Task SendEmail(IQueryable<YourEntity> newData)
+        private async Task SendEmail(IEnumerable<YourEntity> newData)
         {
             using (var client = new SmtpClient(_smtpServer, _smtpPort))
             {
@@ -108,6 +102,6 @@ namespace SendEmailDailyLibrary
 
     public class DailyEmailEventArgs : EventArgs
     {
-        public IQueryable<YourEntity> NewData { get; set; }
+        public IEnumerable<YourEntity> NewData { get; set; }
     }
 }
